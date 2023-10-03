@@ -6,7 +6,8 @@ import {
     createUserWithEmailAndPassword,
     onAuthStateChanged,
   } from "firebase/auth";
-import { Navigate } from 'react-router-dom';
+import { firebaseAuth } from "../utils/firebase-config";
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -14,7 +15,7 @@ const Signup = () => {
         email: "",
         password: ""
     });
-
+    const navigate = useNavigate();
     const handleSignIn = async() => {
         try{
             const {email, password} = formValues;
@@ -26,9 +27,9 @@ const Signup = () => {
     }
 
     onAuthStateChanged(firebaseAuth,(currentUser)=>{
-        if(currentUser) Navigate("/");
+        if(currentUser) navigate("/");
     });
-    
+
     return (
         <Container>
             <BackgroundImage />
