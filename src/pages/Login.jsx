@@ -41,6 +41,7 @@ const Login = () => {
             <div className="container flex column">
               <input
                 type="text"
+                name='email'
                 placeholder="Email"
                 onChange={(e) => setFormValues({
                     ...formValues,
@@ -50,14 +51,16 @@ const Login = () => {
               />
               <input
                 type="password"
+                name='password'
                 placeholder="Password"
-                onChange={(e) => setFormValues({
+                onChange={(e) => {
+                  setFormValues({
                     ...formValues,
                     [e.target.name]: e.target.value,
-                })}
+                })}}
                 value={formValues.password}
               />
-              <button onClick={handleLogin}>Login to your account</button>
+              <button type='button' onClick={handleLogin}>Login to your account</button>
             </div>
           </div>
         </div>
