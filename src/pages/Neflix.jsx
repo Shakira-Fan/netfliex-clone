@@ -14,6 +14,7 @@ export default function Neflix(){
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const genres = useSelector((state) => state.netflix.genres);
   const genresLoaded = useSelector((state) => state.netflix.genresLoaded);
   const movies = useSelector((state) => state.netflix.movies);
 
@@ -23,8 +24,8 @@ export default function Neflix(){
   };
 
   useEffect(()=>{
-    if (genresLoaded) dispatch(fetchMovies({type:"all"}))
-  },[genresLoaded,dispatch])
+    if (genresLoaded) dispatch(fetchMovies({genres,type:"all"}))
+  },[genresLoaded,dispatch,genres])
 
   useEffect(() => {
     dispatch(getGenres());

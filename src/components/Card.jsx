@@ -18,19 +18,28 @@ export default function Card({ movieData, isLiked = false }) {
     >
       <img
         src={`https://image.tmdb.org/t/p/w500${movieData.image}`}
-        alt='movie' />
+        alt='card'
+        onClick={()=> navigate("/player")}
+        />
       {isHovered && (
         <div className="hover">
           <div className="image-video-container">
             <img
               src={`https://image.tmdb.org/t/p/w500${movieData.image}`}
-              alt='movie'
+              alt='card'
               onClick={() => navigate("/player")}
             />
-            <iframe width="100%" height="140px" src="https://www.youtube.com/embed/gset79KMmt0?si=VLE_J4biW3SzUaJJ?mute=1&autoplay=1" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            <iframe 
+              width="100%" 
+              height="140px" 
+              src="https://www.youtube.com/embed/gset79KMmt0?si=VLE_J4biW3SzUaJJ?mute=1&autoplay=1" title="YouTube video player" 
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               className='video'
-              onClick={() => navigate("/player")}></iframe>
+              onClick={() => navigate("/player")}>
+              </iframe>
+          </div>
             <div className="info-container flex column">
               <h3 className="name" onClick={() => navigate("/player")}>
                 {movieData.name}
@@ -60,7 +69,6 @@ export default function Card({ movieData, isLiked = false }) {
                 </ul>
               </div>
             </div>
-          </div>
         </div>
       )}
     </Container>
@@ -89,9 +97,9 @@ const Container = styled.div`
     box-shadow: rgba(0, 0, 0, 0.75) 0px 3px 10px;
     background-color: #181818;
     transition: 0.3s ease-in-out;
-    .image-vide-container {
+    .image-video-container {
       position: relative;
-      height: 200px;
+      height: 140px;
       img {
         width: 100%;
         height: 140px;
