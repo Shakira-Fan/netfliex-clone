@@ -6,11 +6,31 @@ import { AiOutlinePlus } from "react-icons/ai"
 import { RiThumbUpFill, RiThumbDownFill } from "react-icons/ri"
 import { BiChevronDown } from "react-icons/bi"
 import { BsCheck } from "react-icons/bs"
+import { onAuthStateChanged } from "firebase/auth";
+import { firebaseAuth } from '../utils/firebase-config';
+import axios from 'axios';
+import { useDispatch } from 'react-redux'
+import { removeFromLikedMovies } from '../store'
+
 
 export default function Card({ movieData, isLiked = false }) {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
+  const [email, setEmail] = useState(undefined);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
+  onAuthStateChanged(firebaseAuth, (currentUser) => {
+    if (currentUser) setEmail(currentUser.email);
+    else navigate("/login");
+  })
+
+  const addToList = async () => {
+    try {
+      await axios.post("http://localhost:5004/api/user/add", { email, data: movieData })
+    } catch (err) {
+      console.log(err)
+    }
+  }
   return (
     <Container
       onMouseEnter={() => setIsHovered(true)}
@@ -19,8 +39,8 @@ export default function Card({ movieData, isLiked = false }) {
       <img
         src={`https://image.tmdb.org/t/p/w500${movieData.image}`}
         alt='card'
-        onClick={()=> navigate("/player")}
-        />
+        onClick={() => navigate("/player")}
+      />
       {isHovered && (
         <div className="hover">
           <div className="image-video-container">
@@ -29,46 +49,49 @@ export default function Card({ movieData, isLiked = false }) {
               alt='card'
               onClick={() => navigate("/player")}
             />
-            <iframe 
-              width="100%" 
-              height="140px" 
-              src="https://www.youtube.com/embed/gset79KMmt0?si=VLE_J4biW3SzUaJJ?mute=1&autoplay=1" title="YouTube video player" 
-              frameBorder="0" 
+            <iframe
+              width="100%"
+              height="140px"
+              src="https://www.youtube.com/embed/gset79KMmt0?si=VLE_J4biW3SzUaJJ?mute=1&autoplay=1" title="YouTube video player"
+              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowFullScreen
               className='video'
               onClick={() => navigate("/player")}>
-              </iframe>
+            </iframe>
           </div>
-            <div className="info-container flex column">
-              <h3 className="name" onClick={() => navigate("/player")}>
-                {movieData.name}
-              </h3>
-              <div className="icons flex j-between">
-                <div className="controls flex">
-                  <IoPlayCircleSharp
-                    title='play'
-                    onClick={() => navigate("/player")}
-                  />
-                  <RiThumbUpFill title='Like' />
-                  <RiThumbDownFill title='Dislike' />
-                  {isLiked ? (
-                    <BsCheck title='Remove From List' />)
-                    : (<AiOutlinePlus title='Add to my list' />
-                    )}
-                </div>
-                <div className="info">
-                  <BiChevronDown title='More Info' />
-                </div>
+          <div className="info-container flex column">
+            <h3 className="name" onClick={() => navigate("/player")}>
+              {movieData.name}
+            </h3>
+            <div className="icons flex j-between">
+              <div className="controls flex">
+                <IoPlayCircleSharp
+                  title='play'
+                  onClick={() => navigate("/player")}
+                />
+                <RiThumbUpFill title='Like' />
+                <RiThumbDownFill title='Dislike' />
+                {isLiked ? (
+                  <BsCheck title='Remove From List' onClick={() => 
+                    dispatch(
+                      removeFromLikedMovies({ movieId: movieData.id, email })
+                      )} />)
+                  : (<AiOutlinePlus title='Add to my list' onClick={addToList} />
+                  )}
               </div>
-              <div className="genres flex">
-                <ul className="flex">
-                  {movieData.genres.map((genre) => (
-                    <li key={genre}>{genre}</li>
-                  ))}
-                </ul>
+              <div className="info">
+                <BiChevronDown title='More Info' />
               </div>
             </div>
+            <div className="genres flex">
+              <ul className="flex">
+                {movieData.genres.map((genre) => (
+                  <li key={genre}>{genre}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       )}
     </Container>
